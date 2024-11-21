@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
 
   publicRuntimeConfig: {
     SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -49,14 +48,13 @@ const nextConfig = {
         hostname: '**.public.blob.vercel-storage.com',
       },
     ],
-  },
+  },  
 
   productionBrowserSourceMaps: true,
 
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash'],
-    serverComponentsExternalPackages: ['@prisma/client'],
   },
 
   webpack: (config, { dev, isServer }) => {

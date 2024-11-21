@@ -64,7 +64,7 @@ export default function RootLayout({
               <ToastProvider>
                 <InfoBar />
                 <main className="flex-grow">{children}</main>
-                <footer className="text-center py-4 text-sm text-gray-500 dark:text-gray-400">
+                <footer className="text-center py-4 bg-white text-sm text-gray-500 dark:text-gray-400">
                   &copy; {new Date().getFullYear()} BARK Protocol. All rights reserved.
                 </footer>
               </ToastProvider>
