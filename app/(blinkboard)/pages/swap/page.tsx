@@ -10,14 +10,14 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { ArrowDownUp, ArrowRight, Info, RefreshCw } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import Image from "next/legacy/image"
-import { LineChart } from "@/components/ui/charts"
+import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
+import { ChartContainer, LineChart } from "@/components/ui/chart"
 
 const tokens = [
-  { name: "BARK", balance: 1000, icon: "/images/icons/bark.png" },
-  { name: "SOL", balance: 50, icon: "/images/icons/sol.png" },
-  { name: "USDC", balance: 500, icon: "/images/icons/usdc.png" },
+  { name: "BARK", balance: 1000, icon: "https://ucarecdn.com/c18275e5-d6ca-42d3-9075-676952548776/barkicon.png" },
+  { name: "SOL", balance: 50, icon: "https://ucarecdn.com/0aa23f11-40b3-4cdc-891b-a169ed9f9328/sol.png" },
+  { name: "USDC", balance: 500, icon: "https://ucarecdn.com/ee18c01a-d01d-4ad6-adb6-cac9a5539d2c/usdc.png" },
 ]
 
 export default function SwapPage() {
@@ -26,7 +26,7 @@ export default function SwapPage() {
   const [fromAmount, setFromAmount] = useState("")
   const [toAmount, setToAmount] = useState("")
   const [rates, setRates] = useState<Record<string, number>>({})
-  const [chartData, setChartData] = useState([])
+  const [chartData, setChartData] = useState<{ date: string; value: number }[]>([])
   const [slippage, setSlippage] = useState(0.5)
   const [isAutoRouting, setIsAutoRouting] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -83,18 +83,12 @@ export default function SwapPage() {
   const handleSwap = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('https://quote-api.jup.ag/v4/quote', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          inputMint: fromToken.name,
-          outputMint: toToken.name,
-          amount: fromAmount,
-          slippageBps: slippage * 100,
-        }),
-      })
+      const response = await fetch('https://quote-api.jup.ag/v4/quote?' + new URLSearchParams({
+        inputMint: fromToken.name,
+        outputMint: toToken.name,
+        amount: fromAmount,
+        slippageBps: (slippage * 100).toString(),
+      }))
       const data = await response.json()
       console.log('Jupiter Swap Quote:', data)
       // In a real application, you would process the quote and execute the swap
@@ -268,7 +262,20 @@ export default function SwapPage() {
             </CardHeader>
             <CardContent>
               <div className="h-[300px]">
-                <LineChart data={chartData} />
+                <ChartContainer
+                  config={{
+                    value: {
+                      label: "Value",
+                      color: "hsl(var(--chart-1))",
+                    },
+                  }}
+                >
+                  <LineChart
+                    data={chartData}
+                    xAxisKey="date"
+                    yAxisKey="value"
+                  />
+                </ChartContainer>
               </div>
             </CardContent>
           </Card>
@@ -305,3 +312,4 @@ export default function SwapPage() {
     </div>
   )
 }
+

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ApiError } from './errors';
+import { ApiError } from './solana/constants';
 
 export function formatApiResponse(data: any) {
   if (data instanceof ApiError) {

@@ -15,7 +15,7 @@ import {
   } from '@metaplex-foundation/js';
   import { NFTStorage, File } from 'nft.storage';
   import * as anchor from '@coral-xyz/anchor';
-  import { BARK_BLINKS_PROGRAM_ID } from './constants';
+  import { BARK_BLINKS_PROGRAM_ID } from './solana/constants';
   import { BarkBlinksProgram } from './programs';
   
   // Initialize Solana connection
