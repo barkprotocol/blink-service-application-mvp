@@ -14,7 +14,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "generate": "npx prisma generate",
+    "generate": "prisma generate",
     "migrate": "prisma migrate dev --name bark_blink_platform_update",
     "deploy": "prisma migrate deploy",
     "test": "jest",
