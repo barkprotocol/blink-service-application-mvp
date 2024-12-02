@@ -98,6 +98,7 @@
     "next": "^15.0.3",
     "next-auth": "^4.24.10",
     "next-themes": "^0.3.0",
+    "nodemailer": "^6.9.16",
     "pino-pretty": "^11.3.0",
     "react": "19.0.0-rc-fb9a90fa48-20240614",
     "react-day-picker": "^8.10.1",
