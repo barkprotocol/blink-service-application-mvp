@@ -1,109 +1,77 @@
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Zap, Send, CreditCard, Sparkles, Gift, ShoppingBag, Users, Code, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ImageIcon, CreditCard, Gift, FileText, Heart, LinkIcon } from 'lucide-react';
 
 interface FeatureCardProps {
   title: string;
   description: string;
   icon: React.ReactNode;
-  link: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, link }) => (
-  <motion.div
-    whileHover={{ scale: 1.05 }}
-    transition={{ type: "spring", stiffness: 300 }}
-  >
-    <Card className="h-full bg-gradient-to-br from-primary/10 to-secondary/10 border-none shadow-lg">
-      <CardHeader>
-        <div className="flex items-center space-x-2">
-          <div className="p-2 bg-primary/20 rounded-full">
-            {React.cloneElement(icon as React.ReactElement, { className: "h-6 w-6 text-primary" })}
-          </div>
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="text-sm text-muted-foreground mb-4">{description}</CardDescription>
-        <Button asChild variant="outline" className="w-full group hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-          <Link href={link}>
-            Learn More
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-          </Link>
-        </Button>
-      </CardContent>
-    </Card>
-  </motion.div>
-)
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon }) => (
+  <Card className="bg-card text-card-foreground dark:bg-card-dark dark:text-card-foreground-dark shadow-lg">
+    <CardHeader>
+      <CardTitle className="flex items-center text-xl font-semibold">
+        {icon}
+        <span className="ml-3">{title}</span>
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <CardDescription className="text-muted-foreground dark:text-muted-foreground-dark">{description}</CardDescription>
+    </CardContent>
+  </Card>
+);
 
-const features: FeatureCardProps[] = [
-  {
-    title: "Create Blinks",
-    description: "Mint unique digital assets on the Solana blockchain with ease.",
-    icon: <Zap />,
-    link: "/create"
-  },
-  {
-    title: "Send Blinks",
-    description: "Transfer your Blinks to other users seamlessly and securely.",
-    icon: <Send />,
-    link: "/send"
-  },
-  {
-    title: "Micro Payments",
-    description: "Facilitate quick and efficient transactions using Blinks.",
-    icon: <CreditCard />,
-    link: "/payments"
-  },
-  {
-    title: "Customize Blinks",
-    description: "Add unique attributes and metadata to make your Blinks truly special.",
-    icon: <Sparkles />,
-    link: "/customize"
-  },
-  {
-    title: "Gift Blinks",
-    description: "Surprise friends and family with digital gifts that last forever.",
-    icon: <Gift />,
-    link: "/gift"
-  },
-  {
-    title: "Blink Commerce",
-    description: "Create and sell merchandise tied to your unique Blinks.",
-    icon: <ShoppingBag />,
-    link: "/commerce"
-  },
-  {
-    title: "Crowdfunding",
-    description: "Launch and support innovative projects using Blinks.",
-    icon: <Users />,
-    link: "/crowdfunding"
-  },
-  {
-    title: "Developer API",
-    description: "Integrate Blinks into your own applications with our robust API.",
-    icon: <Code />,
-    link: "/api"
-  }
-]
+const Features: React.FC = () => {
+  const featuresList = [
+    {
+      title: "NFT Blinks",
+      description: "Create, manage, and scale unique NFTs or Compressed NFTs on Solana effortlessly.",
+      icon: <ImageIcon className="h-6 w-6 text-primary" />,
+    },
+    {
+      title: "Send Payment Blink",
+      description: "Facilitate payments effortlessly using Blinks and Solana blockchain.",
+      icon: <CreditCard className="h-6 w-6 text-primary" />,
+    },
+    {
+      title: "Gift Blink",
+      description: "Send personalized digital gifts to your loved ones using Blinks.",
+      icon: <Gift className="h-6 w-6 text-primary" />,
+    },
+    {
+      title: "Memo Blink",
+      description: "Share meaningful messages and notes on the blockchain.",
+      icon: <FileText className="h-6 w-6 text-primary" />,
+    },
+    {
+      title: "Donation Blink",
+      description: "Make an impact by sending donations with transparent tracking.",
+      icon: <Heart className="h-6 w-6 text-primary" />,
+    },
+    {
+      title: "Referral Blink",
+      description: "Promote your projects or initiatives with trackable referral links.",
+      icon: <LinkIcon className="h-6 w-6 text-primary" />,
+    },
+  ];
 
-export default function Features() {
   return (
     <section className="py-16 bg-gradient-to-b from-background to-secondary/5">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-4">Unleash the Power of Blinks</h2>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Discover the innovative features that make BARK Blink the ultimate platform for digital asset creation and management on the Solana blockchain.
+        <h2 className="text-5xl font-bold text-center mb-4">Explore the Power of Blinks</h2>
+        <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
+          Discover six versatile Blink types that enable digital asset creation, payments, donations, and more—all on the Solana blockchain.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuresList.map((feature, index) => (
             <FeatureCard key={index} {...feature} />
           ))}
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
+
+export default Features;
+

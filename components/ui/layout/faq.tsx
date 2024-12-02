@@ -3,60 +3,41 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 interface FAQItemProps {
   question: string;
   answer: string;
-  isOpen: boolean;
-  onToggle: () => void;
+  value: string;
 }
 
-function FAQItem({ question, answer, isOpen, onToggle }: FAQItemProps) {
+function FAQItem({ question, answer, value }: FAQItemProps) {
   return (
-    <div className="border-b border-border last:border-b-0">
-      <button
-        className="flex justify-between items-center w-full py-4 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 rounded-lg transition-all duration-200 ease-in-out text-foreground"
-        onClick={onToggle}
-      >
+    <AccordionItem value={value}>
+      <AccordionTrigger className="text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 rounded-lg transition-all duration-200 ease-in-out text-foreground">
         <span className="font-medium text-base sm:text-lg pr-4 text-foreground">{question}</span>
+      </AccordionTrigger>
+      <AccordionContent>
         <motion.div
-          initial={false}
-          animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex-shrink-0"
+          initial="collapsed"
+          animate="open"
+          exit="collapsed"
+          variants={{
+            open: { opacity: 1, height: 'auto', marginBottom: '1rem' },
+            collapsed: { opacity: 0, height: 0, marginBottom: '0' },
+          }}
+          transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
         >
-          {isOpen ? (
-            <Minus className="h-5 w-5 text-primary" />
-          ) : (
-            <Plus className="h-5 w-5 text-primary" />
-          )}
+          <div className="pb-4 text-sm sm:text-base leading-relaxed text-muted-foreground">
+            {answer}
+          </div>
         </motion.div>
-      </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial="collapsed"
-            animate="open"
-            exit="collapsed"
-            variants={{
-              open: { opacity: 1, height: 'auto', marginBottom: '1rem' },
-              collapsed: { opacity: 0, height: 0, marginBottom: '0' },
-            }}
-            transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
-          >
-            <div className="pb-4 text-sm sm:text-base leading-relaxed text-muted-foreground">
-              {answer}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      </AccordionContent>
+    </AccordionItem>
   );
 }
 
 export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   const faqItems = [
     {
       question: "What is a BARK Blink?",
@@ -82,7 +63,7 @@ export function FAQ() {
 
   return (
     <section id="faq" className="py-16 sm:py-20">
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -90,19 +71,19 @@ export function FAQ() {
         >
           <h2 className="font-inter text-4xl sm:text-5xl font-bold mb-2 text-center text-foreground">FAQ</h2>
           <h3 className="font-poppins text-xl sm:text-2xl font-medium mb-8 text-center text-muted-foreground">Frequently Asked Questions</h3>
-          <div className="space-y-4">
+          <Accordion type="single" collapsible className="space-y-4">
             {faqItems.map((item, index) => (
               <FAQItem
                 key={index}
                 question={item.question}
                 answer={item.answer}
-                isOpen={index === openIndex}
-                onToggle={() => setOpenIndex(index === openIndex ? null : index)}
+                value={`item-${index}`}
               />
             ))}
-          </div>
+          </Accordion>
         </motion.div>
       </div>
     </section>
   );
 }
+

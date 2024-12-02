@@ -1,54 +1,40 @@
 'use client'
 
-import React from 'react'
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from 'lucide-react'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
-interface CTAProps {
-  onLaunchApp: () => void;
-}
-
-export function CTA({ onLaunchApp }: CTAProps) {
+export function CTA() {
   return (
-    <section id="cta" className="mt-8 mb-20 py-16 sm:py-20 bg-gradient-to-br from-background to-secondary rounded-lg shadow-lg">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-      >
-        <div className="mb-6 relative w-16 h-16 mx-auto">
-          <Image
-            src="https://ucarecdn.com/f242e5dc-8813-47b4-af80-6e6dd43945a9/barkicon.png"
-            alt="BARK BLINK icon"
-            fill
-            className="object-contain"
-          />
-        </div>
-        <h2 className="font-inter text-4xl sm:text-5xl font-bold mb-6 text-foreground">
-          Ready to Start Creating Blinks?
-        </h2>
-        <p className="font-light text-xl sm:text-2xl mb-10 text-muted-foreground max-w-2xl mx-auto">
-          Join the BARK community and start creating your Blinks today! Experience the future of digital interactions on Solana.
-        </p>
+    <section id="cta" className="py-20 bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <Button 
-            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-base px-6 py-3 rounded-full shadow-md hover:shadow-lg"
-            onClick={onLaunchApp}
-          >
-            Create Now
-            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-          </Button>
+          <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <CardContent className="p-8 sm:p-12 text-center">
+              <h2 className="font-inter text-3xl sm:text-4xl font-bold mb-6 text-foreground leading-tight">
+                Unleash the Power of Blockchain with BARK
+              </h2>
+              <p className="mb-8 max-w-4xl mx-auto text-base sm:text-lg leading-relaxed text-muted-foreground">
+                Dive into a world of limitless possibilities! With BARK, you can create, trade, send gifts, and manage your unique Blinks (Blockchain Links) on the Solana blockchain. Connect with like-minded creators, embrace cutting-edge innovation, and experience a vibrant ecosystem where digital ownership becomes seamless and rewarding.
+              </p>
+              <Link href="/get-started" passHref>
+                <Button size="lg" className="font-semibold shadow-md hover:shadow-lg transition-shadow duration-300">
+                  Get Started Now
+                  <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </motion.div>
-        <p className="mt-6 text-sm text-muted-foreground">
-          No credit card required. Start for free and upgrade anytime.
-        </p>
-      </motion.div>
+      </div>
     </section>
-  )
+  );
 }
+

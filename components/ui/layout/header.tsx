@@ -58,12 +58,6 @@ function MobileMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-        <div className="flex justify-end mb-4">
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-            <X className="h-6 w-6" />
-            <span className="sr-only">Close menu</span>
-          </Button>
-        </div>
         <nav className="font-poppins flex flex-col space-y-4">
           <NavLink href="#features">Features</NavLink>
           <NavLink href="#how-it-works">How It Works</NavLink>
@@ -85,8 +79,9 @@ function ThemeToggle() {
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       aria-label="Toggle theme"
     >
-      <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
     </Button>
   )
 }
@@ -104,7 +99,9 @@ export function Header() {
 
   return (
     <motion.header 
-      className={`bg-background sticky top-0 z-10 transition-shadow duration-300 ${isScrolled ? 'shadow-md' : 'shadow-sm'}`}
+      className={`sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${
+        isScrolled ? 'border-b' : ''
+      }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -116,6 +113,7 @@ export function Header() {
               src="https://ucarecdn.com/f242e5dc-8813-47b4-af80-6e6dd43945a9/barkicon.png"
               alt="BARK BLINK logo"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="rounded-full transition-transform duration-300 group-hover:scale-110 object-cover"
             />
           </div>
@@ -140,3 +138,4 @@ export function Header() {
     </motion.header>
   )
 }
+

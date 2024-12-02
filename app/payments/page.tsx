@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { motion } from 'framer-motion'
 import { CreditCard, ArrowLeft, Wallet } from 'lucide-react'
-import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, TransactionInstruction } from '@solana/web3.js'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
@@ -34,6 +34,7 @@ export default function PaymentsPage() {
     recipient: string;
     amount: number;
     timestamp: Date;
+    memo?: string;
   }>>([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('sol')
@@ -50,9 +51,9 @@ export default function PaymentsPage() {
       // In a real application, you would fetch transactions from your backend or the Solana blockchain
       // For this example, we'll use mock data
       const mockTransactions = [
-        { id: '1', recipient: '7X8jbJdZh2Wi4cmM...', amount: 0.05, timestamp: new Date('2023-05-01T10:00:00') },
-        { id: '2', recipient: '3Fej7yNhJoHCmJ9X...', amount: 0.1, timestamp: new Date('2023-05-02T14:30:00') },
-        { id: '3', recipient: '9Qm5tKqoWqrFxAe7...', amount: 0.02, timestamp: new Date('2023-05-03T09:15:00') },
+        { id: '1', recipient: '7X8jbJdZh2Wi4cmM...', amount: 0.05, timestamp: new Date('2023-05-01T10:00:00'), memo: 'Coffee' },
+        { id: '2', recipient: '3Fej7yNhJoHCmJ9X...', amount: 0.1, timestamp: new Date('2023-05-02T14:30:00'), memo: 'Lunch' },
+        { id: '3', recipient: '9Qm5tKqoWqrFxAe7...', amount: 0.02, timestamp: new Date('2023-05-03T09:15:00'), memo: 'Tip' },
       ]
       setTransactions(mockTransactions)
     } catch (error) {
@@ -67,7 +68,7 @@ export default function PaymentsPage() {
     }
   }
 
-  const handlePayment = async (recipient: string, amount: number) => {
+  const handlePayment = async (recipient: string, amount: number, memo: string) => {
     if (!connected || !publicKey || !sendTransaction) {
       toast({
         title: "Wallet not connected",
@@ -91,6 +92,16 @@ export default function PaymentsPage() {
         })
       )
 
+      if (memo) {
+        transaction.add(
+          new TransactionInstruction({
+            keys: [],
+            programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
+            data: Buffer.from(memo, "utf-8"),
+          })
+        )
+      }
+
       const { blockhash } = await connection.getRecentBlockhash()
       transaction.recentBlockhash = blockhash
       transaction.feePayer = publicKey
@@ -103,6 +114,7 @@ export default function PaymentsPage() {
         recipient,
         amount,
         timestamp: new Date(),
+        memo,
       }
 
       setTransactions([newTransaction, ...transactions])
@@ -133,7 +145,7 @@ export default function PaymentsPage() {
           className="mb-12"
         >
           <Link href="/" passHref>
-            <Button variant="ghost" className="mb-6 hover:bg-primary/10">
+            <Button className="mb-6 hover:bg-primary/10">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Main
             </Button>
           </Link>
@@ -147,11 +159,6 @@ export default function PaymentsPage() {
                 Send quick and secure transactions on the Solana blockchain using BARK, SOL, or USDC.
               </CardDescription>
             </CardHeader>
-            {!connected && (
-              <CardContent className="flex justify-center pt-6">
-                <ConnectWalletButton />
-              </CardContent>
-            )}
           </Card>
         </motion.div>
         {connected ? (
@@ -203,15 +210,7 @@ export default function PaymentsPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Card className="bg-white shadow-lg border-none">
-                  <CardHeader>
-                    <CardTitle className="text-2xl font-semibold">Transaction History</CardTitle>
-                    <CardDescription>View your recent payment activities</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <PaymentHistory transactions={transactions} isLoading={isLoading} />
-                  </CardContent>
-                </Card>
+                <PaymentHistory transactions={transactions} isLoading={isLoading} />
               </motion.div>
             </TabsContent>
           </Tabs>

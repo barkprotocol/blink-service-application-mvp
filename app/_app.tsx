@@ -5,8 +5,8 @@ import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
-import { Header } from '@/components/ui/header'
-import { Footer } from '@/components/ui/footer'
+import { Header } from '@/components/ui/layout/header'
+import { Footer } from '@/components/ui/layout/footer'
 import { Toaster } from '@/components/ui/toaster'
 
 import '@/styles/globals.css'

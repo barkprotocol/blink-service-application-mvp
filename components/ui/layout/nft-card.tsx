@@ -1,40 +1,45 @@
-import React from 'react'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { NFT } from '@/interfaces/nft'
-import Image from 'next/image'
+import Image from 'next/image';
+import { Card, Button } from '@nextui-org/react';
 
-interface NFTCardProps {
-  nft: NFT
-  onClick: (nft: NFT) => void
+interface NFT {
+  name: string;
+  image: string;
+  // ... other properties
 }
 
-export function NFTCard({ nft, onClick }: NFTCardProps) {
+const NFTCard: React.FC<{ nft: NFT; onClick: (nft: NFT) => void }> = ({ nft, onClick }) => {
   return (
-    <Card className="w-full max-w-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={() => onClick(nft)}>
-      <CardHeader>
-        <CardTitle className="truncate">{nft.name}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="relative w-full h-48">
-          <Image
-            src={nft.image}
-            alt={nft.name}
-            layout="fill"
-            objectFit="cover"
-            className="rounded-md"
-          />
-        </div>
-        <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{nft.description}</p>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" className="w-full" onClick={(e) => {
-          e.stopPropagation()
-          onClick(nft)
-        }}>
+    <Card
+      className="w-full max-w-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      onClick={() => onClick(nft)}
+      aria-label={`NFT Card for ${nft.name}`}
+    >
+      <Image
+        src={nft.image}
+        alt={nft.name}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="rounded-md object-cover"
+      />
+      <Card.Body>
+        <Card.Title>{nft.name}</Card.Title>
+        {/* ... other card content ... */}
+      </Card.Body>
+      <Card.Footer>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick(nft);
+          }}
+          aria-label={`View details for ${nft.name}`}
+        >
           View Details
         </Button>
-      </CardFooter>
+      </Card.Footer>
     </Card>
-  )
-}
+  );
+};
+
+export default NFTCard;

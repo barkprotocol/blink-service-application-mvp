@@ -56,7 +56,7 @@ export function Actions() {
 
   const actions: ActionCardProps[] = [
     { 
-      title: "Create CNFT", 
+      title: "Create NFT", 
       description: "Mint new compressed NFT on the Solana blockchain.", 
       icon: <PlusCircle className="h-5 w-5 text-primary" />,
       action: "Start Minting",
@@ -115,7 +115,7 @@ export function Actions() {
 
   return (
     <section id="actions" className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="font-inter text-4xl sm:text-5xl font-bold mb-2 text-center text-foreground">Actions</h2>
         <h3 className="font-poppins text-xl sm:text-2xl font-medium mb-4 text-center text-muted-foreground">Empower Your BARK Experience</h3>
         <p className="font-poppins text-base sm:text-lg text-muted-foreground mb-12 text-center max-w-3xl mx-auto">

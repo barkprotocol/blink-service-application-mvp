@@ -22,8 +22,8 @@ export function Hero({ onLaunchApp }: HeroProps) {
         <Image
           src="https://ucarecdn.com/750e9f1b-edfc-4ac8-a5b4-3286c7de98d6/barkmascottrasparentbg.png"
           alt="BARK mascot background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: 'cover' }}
           quality={100}
           className="blur-sm opacity-5"
           priority
@@ -35,7 +35,7 @@ export function Hero({ onLaunchApp }: HeroProps) {
         transition={{ duration: 0.8 }}
         className="relative z-10 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto"
       >
-        <Badge className="inline-flex items-center mb-4 sm:mb-6 text-sm font-medium bg-primary/20 text-primary px-3 py-1 rounded-full border border-primary/50">
+        <Badge variant="outline" className="inline-flex items-center mb-4 sm:mb-6 text-sm font-medium bg-secondary/20 text-secondary-foreground px-3 py-1 rounded-full border border-secondary/50">
           <Zap className="w-4 h-4 mr-1.5" aria-hidden="true" />
           <span>Powering the Future of Digital Interactions</span>
         </Badge>
@@ -51,19 +51,21 @@ export function Hero({ onLaunchApp }: HeroProps) {
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12 sm:mb-16 md:mb-20">
           <Button 
             onClick={onLaunchApp}
-            className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            size="lg"
+            className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors"
           >
             Launch Application
-            <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+            <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
           </Button>
           <Button 
             variant="outline" 
-            className="w-full sm:w-auto border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            size="lg"
+            className="w-full sm:w-auto border-2 border-secondary text-secondary-foreground hover:bg-secondary hover:text-secondary-foreground transition-colors"
             asChild
           >
             <Link href="https://docs.barkprotocol.net">
               Read Documentation
-              <ExternalLink className="ml-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+              <ExternalLink className="ml-2 h-5 w-5" aria-hidden="true" />
             </Link>
           </Button>
         </div>
@@ -90,3 +92,4 @@ export function Hero({ onLaunchApp }: HeroProps) {
     </section>
   )
 }
+

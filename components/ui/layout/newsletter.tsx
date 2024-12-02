@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Loader2, Mail } from 'lucide-react'
 import { useToast } from "@/components/ui/use-toast"
 import { motion } from 'framer-motion'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function Newsletter() {
   const [email, setEmail] = useState('')
@@ -52,40 +53,46 @@ export function Newsletter() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-inter text-3xl sm:text-4xl font-bold mb-4 text-center text-foreground">Stay in the Loop</h2>
-          <p className="font-light text-lg sm:text-xl mb-8 text-center text-muted-foreground max-w-2xl mx-auto">
-            Get the latest updates, news, and exclusive offers directly in your inbox. Join our community today!
-          </p>
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-            <div className="flex-grow">
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full rounded-full py-3 px-4"
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors rounded-full py-3 px-6 font-medium text-base"
-              disabled={isSubscribing}
-            >
-              {isSubscribing ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <>
-                  Subscribe
-                  <Mail className="ml-2 h-5 w-5" />
-                </>
-              )}
-            </Button>
-          </form>
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-inter text-3xl sm:text-4xl font-bold mb-4 text-center">Stay in the Loop</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="font-light text-lg sm:text-xl mb-8 text-center text-muted-foreground max-w-2xl mx-auto">
+                Get the latest updates, news, and exclusive offers directly in your inbox. Join our community today!
+              </p>
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+                <div className="flex-grow">
+                  <label htmlFor="email" className="sr-only">Email address</label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full"
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  disabled={isSubscribing}
+                >
+                  {isSubscribing ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <>
+                      Subscribe
+                      <Mail className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     </section>
   )
 }
+

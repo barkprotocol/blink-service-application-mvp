@@ -159,6 +159,11 @@ We welcome contributions to BARK Blink! To contribute:
 
 Please ensure tests are updated as needed and follow the [Contributor Covenant](https://www.contributor-covenant.org/) code of conduct.
 
+## ToDo
+
+- Create a modular
+- API needs to be refactored
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

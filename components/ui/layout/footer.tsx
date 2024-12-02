@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { Button } from "@/components/ui/button"
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -47,33 +48,43 @@ export function Footer() {
     <footer className="bg-background shadow-sm mt-20">
       <div className="container mx-auto px-4 py-12 flex flex-col items-center">
         <nav aria-label="Social media links" className="mb-8">
-          <h3 className="text-2xl font-semibold text-foreground mb-4 text-center">Follow Us</h3>
+          <h2 className="text-2xl font-semibold text-foreground mb-4 text-center">Follow Us</h2>
           <ul className="flex space-x-4">
             {socialLinks.map((link) => (
               <motion.li key={link.label} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <a 
-                  href={link.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  aria-label={link.label}
-                  className="block"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  asChild
                 >
-                  <link.icon className="w-6 h-6 text-primary hover:text-primary/80 transition-colors" />
-                </a>
+                  <a 
+                    href={link.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    aria-label={link.label}
+                  >
+                    <link.icon className="w-6 h-6" />
+                  </a>
+                </Button>
               </motion.li>
             ))}
           </ul>
         </nav>
         
         <nav aria-label="Legal links" className="flex space-x-4">
-          <Link href="/pages/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-            Terms of Use
-          </Link>
-          <Link href="/pages/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-            Privacy Policy
-          </Link>
+          <Button variant="link" asChild>
+            <Link href="/pages/terms" className="text-sm">
+              Terms of Use
+            </Link>
+          </Button>
+          <Button variant="link" asChild>
+            <Link href="/pages/privacy" className="text-sm">
+              Privacy Policy
+            </Link>
+          </Button>
         </nav>
       </div>
     </footer>
   )
 }
+
