@@ -105,7 +105,7 @@ The BARK Blink web interface is optimized for both simplicity and power, built w
 ![Dashboard Overview](.github/assets/dashboard-overview.png)  
 
 ### Create NFTs  
-![Create cNFT](.github/assets/ntt.png)  
+![Create cNFT](.github/assets/nft.png)  
 
 ---
 
