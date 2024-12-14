@@ -1,24 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createBlink } from '@/utils/blink/create-blink';
 import { PublicKey } from '@solana/web3.js';
 import { ApiError } from '@/utils/errors/api-error';
-import { ERROR_MESSAGES, NFT_TYPES, METADATA_STANDARDS } from '@/utils/constants';
-import { createNFT } from '@/utils/nft/create-nft';
-import { uploadToArweave } from '@/utils/storage/arweave-upload';
+import { ERROR_MESSAGES } from '@/utils/constants';
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
-    const owner = formData.get('owner') as string;
-    const name = formData.get('name') as string;
-    const description = formData.get('description') as string;
-    const nftType = formData.get('type') as string;
-    const image = formData.get('image') as File;
-    const isTransferable = formData.get('isTransferable') === 'true';
-    const metadataStandard = formData.get('metadataStandard') as string || METADATA_STANDARDS.METAPLEX;
+    const body = await request.json();
+    const { owner, name, description, blinkType, isNFT, isDonation, isGift, isPayment, isPoll } = body;
 
     // Validate required fields
-    if (!owner || !name || !description || !nftType || !image) {
-      throw new ApiError(400, ERROR_MESSAGES.MISSING_INFORMATION, ['owner', 'name', 'description', 'type', 'image']);
+    if (!owner || !name || !description || !blinkType) {
+      throw new ApiError(400, ERROR_MESSAGES.MISSING_INFORMATION, ['owner', 'name', 'description', 'blinkType']);
     }
 
     // Validate owner is a valid Solana public key
@@ -29,46 +22,35 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, 'Invalid owner public key', [(error as Error).message]);
     }
 
-    // Validate NFT type
-    if (!Object.values(NFT_TYPES).includes(nftType as any)) {
-      throw new ApiError(400, 'Invalid NFT type', [`Type must be one of: ${Object.values(NFT_TYPES).join(', ')}`]);
-    }
+    // Validate boolean fields
+    const booleanFields = { isNFT, isDonation, isGift, isPayment, isPoll };
+    Object.entries(booleanFields).forEach(([key, value]) => {
+      if (typeof value !== 'boolean') {
+        throw new ApiError(400, `Invalid ${key} value`, [`${key} must be a boolean`]);
+      }
+    });
 
-    // Validate metadata standard
-    if (!Object.values(METADATA_STANDARDS).includes(metadataStandard as any)) {
-      throw new ApiError(400, 'Invalid metadata standard', [`Standard must be one of: ${Object.values(METADATA_STANDARDS).join(', ')}`]);
-    }
-
-    // Upload image to Arweave
-    const imageUrl = await uploadToArweave(image);
-
-    // Prepare metadata
-    const metadata = {
+    // Create the Blink
+    const blinkMintAddress = await createBlink({
+      owner: ownerPublicKey,
       name,
       description,
-      image: imageUrl,
-      attributes: [
-        { trait_type: 'Type', value: nftType },
-        { trait_type: 'Transferable', value: isTransferable ? 'Yes' : 'No' },
-      ],
-    };
-
-    // Create the NFT
-    const nftMintAddress = await createNFT({
-      owner: ownerPublicKey,
-      metadata,
-      isTransferable,
-      metadataStandard,
+      blinkType,
+      isNFT,
+      isDonation,
+      isGift,
+      isPayment,
+      isPoll
     });
 
     return NextResponse.json({ 
       success: true, 
-      message: 'NFT created successfully', 
-      data: { nftMintAddress, metadata } 
+      message: 'Blink created successfully', 
+      data: { blinkMintAddress } 
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Error in create-nft route:', error);
+    console.error('Error in create-blink route:', error);
 
     if (error instanceof ApiError) {
       return NextResponse.json({ 

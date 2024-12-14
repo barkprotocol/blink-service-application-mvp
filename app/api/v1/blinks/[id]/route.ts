@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { rateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
-import { updateBlinkOnChain, deleteBlinkFromChain } from '@/lib/solana/blink-operations';
+import { updateBlinkOnChain, deleteBlinkFromChain } from '@/lib/actions/blink-operations';
 
 const updateBlinkSchema = z.object({
   name: z.string().min(1).max(100).optional(),
@@ -24,7 +24,7 @@ export async function GET(
     }
 
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -47,7 +47,7 @@ export async function GET(
     }
 
     if (blink.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     return NextResponse.json(blink);
@@ -68,7 +68,7 @@ export async function PUT(
     }
 
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -90,7 +90,7 @@ export async function PUT(
     }
 
     if (blink.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // Update blink on-chain
@@ -135,7 +135,7 @@ export async function DELETE(
     }
 
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -148,7 +148,7 @@ export async function DELETE(
     }
 
     if (blink.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // Delete blink from blockchain
@@ -166,6 +166,3 @@ export async function DELETE(
   }
 }
 
-export const config = {
-  runtime: 'edge',
-};

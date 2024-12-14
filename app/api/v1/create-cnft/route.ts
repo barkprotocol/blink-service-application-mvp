@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import { ApiError } from '@/utils/errors/api-error'
-import { createCNFT } from '@/utils/nft/create-cnft'
 
 const prisma = new PrismaClient()
 
@@ -19,10 +18,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = CNFTSchema.parse(body)
 
-    // Create CNFT on Solana blockchain
-    const cnftResult = await createCNFT(validatedData)
-
-    // Store CNFT metadata in database
     const cnft = await prisma.cNFT.create({
       data: {
         name: validatedData.name,
@@ -30,20 +25,13 @@ export async function POST(request: NextRequest) {
         image: validatedData.image,
         royaltyPercentage: validatedData.royaltyPercentage,
         creatorAddress: validatedData.creatorAddress,
-        mintAddress: cnftResult.mintAddress,
-        metadataAddress: cnftResult.metadataAddress,
       },
     })
 
     return NextResponse.json({ 
       success: true, 
       message: 'Compressed NFT created successfully', 
-      data: {
-        id: cnft.id,
-        name: cnft.name,
-        mintAddress: cnft.mintAddress,
-        metadataAddress: cnft.metadataAddress,
-      }
+      data: cnft 
     }, { status: 201 })
 
   } catch (error) {

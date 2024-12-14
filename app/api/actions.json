@@ -1,0 +1,175 @@
+{
+    "version": "1.0",
+    "actions": [
+      {
+        "name": "createCNFT",
+        "endpoint": "/api/v1/cnft/create",
+        "method": "POST",
+        "description": "Create a new Compressed NFT (cNFT)",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "Name of the cNFT"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": true,
+            "description": "Description of the cNFT"
+          },
+          {
+            "name": "image",
+            "type": "string",
+            "required": true,
+            "description": "URL or Base64 encoded image for the cNFT"
+          },
+          {
+            "name": "royaltyPercentage",
+            "type": "number",
+            "required": true,
+            "description": "Royalty percentage for the cNFT (0-100)"
+          },
+          {
+            "name": "creatorAddress",
+            "type": "string",
+            "required": true,
+            "description": "Solana address of the cNFT creator"
+          }
+        ]
+      },
+      {
+        "name": "getCNFT",
+        "endpoint": "/api/v1/cnft/{id}",
+        "method": "GET",
+        "description": "Retrieve a Compressed NFT by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "ID of the cNFT to retrieve"
+          }
+        ]
+      },
+      {
+        "name": "createBlink",
+        "endpoint": "/api/v1/blinks",
+        "method": "POST",
+        "description": "Create a new Blink",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "Name of the Blink"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": true,
+            "description": "Description of the Blink"
+          },
+          {
+            "name": "blinkType",
+            "type": "string",
+            "required": true,
+            "description": "Type of the Blink"
+          },
+          {
+            "name": "isNFT",
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the Blink is an NFT"
+          },
+          {
+            "name": "isDonation",
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the Blink is a donation"
+          },
+          {
+            "name": "isGift",
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the Blink is a gift"
+          },
+          {
+            "name": "isPayment",
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the Blink is a payment"
+          },
+          {
+            "name": "isPoll",
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the Blink is a poll"
+          }
+        ]
+      },
+      {
+        "name": "getBlink",
+        "endpoint": "/api/v1/blinks/{id}",
+        "method": "GET",
+        "description": "Retrieve a Blink by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "ID of the Blink to retrieve"
+          }
+        ]
+      },
+      {
+        "name": "updateBlink",
+        "endpoint": "/api/v1/blinks/{id}",
+        "method": "PUT",
+        "description": "Update an existing Blink",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "ID of the Blink to update"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "New name for the Blink"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "New description for the Blink"
+          },
+          {
+            "name": "blinkType",
+            "type": "string",
+            "required": false,
+            "description": "New type for the Blink"
+          }
+        ]
+      },
+      {
+        "name": "deleteBlink",
+        "endpoint": "/api/v1/blinks/{id}",
+        "method": "DELETE",
+        "description": "Delete a Blink",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "ID of the Blink to delete"
+          }
+        ]
+      }
+    ]
+  }
+  
+  

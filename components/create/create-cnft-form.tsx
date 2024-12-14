@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,6 +14,7 @@ import { Slider } from "@/components/ui/slider"
 import { LAMPORTS_PER_SOL, PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useConfirmTransaction } from '@/hooks/use-confirm-transaction'
 
 let TREASURY_WALLET: PublicKey | null = null
 try {
@@ -37,8 +38,10 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [estimatedCost, setEstimatedCost] = useState(0)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-  const { publicKey, signTransaction } = useWallet()
+  const { publicKey } = useWallet()
+  const { connection } = useConnection()
   const { toast } = useToast()
+  const { confirmTransaction, isConfirming } = useConfirmTransaction()
 
   useEffect(() => {
     // Load saved form data from local storage
@@ -88,6 +91,12 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
 
     setIsLoading(true)
     try {
+      // Check balance
+      const balance = await connection.getBalance(publicKey)
+      if (balance < estimatedCost * LAMPORTS_PER_SOL) {
+        throw new Error("Insufficient balance to create CNFT")
+      }
+
       // Create a transaction to send fees to the treasury
       const transaction = new Transaction().add(
         SystemProgram.transfer({
@@ -97,11 +106,11 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
         })
       )
 
-      // Sign and send the transaction
-      const signedTransaction = await signTransaction(transaction)
-      // In a real-world scenario, you would send this transaction to the network
-      // For this example, we'll just log it
-      console.log('Signed transaction:', signedTransaction)
+      // Confirm the transaction
+      const signature = await confirmTransaction(transaction, publicKey, "CNFT Creation Fee")
+      if (!signature) {
+        throw new Error("Transaction was not confirmed")
+      }
 
       // Call API to create CNFT
       const response = await fetch('/api/v1/cnft/create', {
@@ -115,6 +124,7 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
           image,
           royaltyPercentage,
           creatorAddress: publicKey.toString(),
+          signature, // Include the transaction signature
         }),
       })
 
@@ -214,12 +224,12 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
       <Button
         type="submit"
         className="w-full"
-        disabled={isLoading || !name || !description || !image}
+        disabled={isLoading || isConfirming || !name || !description || !image}
       >
-        {isLoading ? (
+        {isLoading || isConfirming ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating...
+            {isConfirming ? 'Confirming...' : 'Creating...'}
           </>
         ) : (
           <>
@@ -245,8 +255,8 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>Cancel</Button>
-            <Button onClick={handleCreateCNFT} disabled={isLoading}>
-              {isLoading ? 'Creating...' : 'Confirm'}
+            <Button onClick={handleCreateCNFT} disabled={isLoading || isConfirming}>
+              {isLoading || isConfirming ? 'Processing...' : 'Confirm'}
             </Button>
           </DialogFooter>
         </DialogContent>
