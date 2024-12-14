@@ -97,15 +97,20 @@ The BARK Blink web interface is optimized for both simplicity and power, built w
 
 ## Screenshots  
 
-### Landing Page  
-![Light Theme](.github/assets/landing-page-light.png)  
+### Light Landing Page  
+![Light Theme](.github/assets/landing-page-light.png)
+
+### Dark Landing Page
 ![Dark Theme](.github/assets/landing-page-dark.png)  
 
 ### Blinkboard  
 ![Dashboard Overview](.github/assets/dashboard-overview.png)  
 
 ### Create NFTs  
-![Create cNFT](.github/assets/nft.png)  
+![Create cNFT](.github/assets/nft.png) 
+
+### NFT Preview
+![Preview cNFT](.github/assets/nft-mint-preview.png)  
 
 ---
 
