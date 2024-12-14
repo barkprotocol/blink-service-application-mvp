@@ -5,7 +5,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea"......
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Upload, AlertCircle } from 'lucide-react'
 import { ImageUpload } from './image-upload'
@@ -13,8 +13,10 @@ import { NFTPreview } from './nft-preview'
 import { Slider } from "@/components/ui/slider"
 import { LAMPORTS_PER_SOL, PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useConfirmTransaction } from '@/hooks/use-confirm-transaction'
+import { mintCNFT } from '@/utils/nft/mint-cnft'
+
 
 let TREASURY_WALLET: PublicKey | null = null
 try {
@@ -38,6 +40,9 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [estimatedCost, setEstimatedCost] = useState(0)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [isMinting, setIsMinting] = useState(false)
+  const [recipientAddress, setRecipientAddress] = useState<string>('')
+  const [collectionAddress, setCollectionAddress] = useState<string>('')
   const { publicKey } = useWallet()
   const { connection } = useConnection()
   const { toast } = useToast()
@@ -56,19 +61,19 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
 
   useEffect(() => {
     // Save form data to local storage
-    const formData = { name, description, royaltyPercentage }
+    const formData = { name, description, royaltyPercentage, collectionAddress }
     localStorage.setItem('cnftFormData', JSON.stringify(formData))
 
     // Update progress when form fields are filled
-    const formProgress = 20 + (name ? 15 : 0) + (description ? 15 : 0) + (image ? 15 : 0) + (royaltyPercentage ? 15 : 0)
-    setProgress(formProgress)
+    const formProgress = 20 + (name ? 15 : 0) + (description ? 15 : 0) + (image ? 15 : 0) + (royaltyPercentage ? 15 : 0) + (collectionAddress ? 20 : 0);
+    setProgress(Math.min(formProgress, 100));
 
     // Calculate estimated cost
     const price = 1 // Assuming a base price of 1 SOL
     const creationFee = price * (CREATION_FEE_PERCENTAGE / 100)
     const totalFee = creationFee + SOLANA_CREATION_FEE / LAMPORTS_PER_SOL
     setEstimatedCost(totalFee)
-  }, [name, description, image, royaltyPercentage, setProgress])
+  }, [name, description, image, royaltyPercentage, collectionAddress, setProgress])
 
   const handleCreateCNFT = async () => {
     if (!publicKey) {
@@ -163,6 +168,65 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
     setShowConfirmDialog(true)
   }
 
+  const isValidSolanaAddress = (address: string) => {
+    try {
+      new PublicKey(address);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const handleConfirmMint = async () => {
+    if (!publicKey) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet to mint the CNFT.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (collectionAddress && !isValidSolanaAddress(collectionAddress)) {
+      toast({
+        title: "Invalid Collection Address",
+        description: "Please enter a valid Solana address for the collection.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsMinting(true)
+    try {
+      const mintResult = await mintCNFT({
+        name,
+        description,
+        image,
+        royaltyPercentage,
+        creatorAddress: publicKey.toString(),
+        recipientAddress: recipientAddress || publicKey.toString(), // Use connected wallet if no recipient specified
+        collectionAddress: collectionAddress || null,
+      })
+
+      toast({
+        title: "CNFT Minted Successfully",
+        description: `Your CNFT has been minted with address: ${mintResult.mintAddress}`,
+      })
+      setProgress(100)
+      // Reset form or navigate to a success page
+    } catch (error) {
+      console.error('Error minting CNFT:', error)
+      toast({
+        title: "Minting Failed",
+        description: error instanceof Error ? error.message : "Failed to mint CNFT. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsMinting(false)
+    }
+  }
+
+
   if (!TREASURY_WALLET) {
     return (
       <Alert variant="destructive">
@@ -214,6 +278,26 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
         <p className="text-sm text-muted-foreground">Current royalty: {royaltyPercentage}%</p>
       </div>
       <div className="space-y-2">
+        <Label htmlFor="recipientAddress">Recipient Address (optional)</Label>
+        <Input
+          id="recipientAddress"
+          value={recipientAddress}
+          onChange={(e) => setRecipientAddress(e.target.value)}
+          placeholder="Enter recipient's wallet address"
+        />
+        <p className="text-sm text-muted-foreground">Leave empty to mint to your connected wallet</p>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="collectionAddress">Collection Address (optional)</Label>
+        <Input
+          id="collectionAddress"
+          value={collectionAddress}
+          onChange={(e) => setCollectionAddress(e.target.value)}
+          placeholder="Enter collection address"
+        />
+        <p className="text-sm text-muted-foreground">Leave empty if not part of a collection</p>
+      </div>
+      <div className="space-y-2">
         <p className="text-sm text-muted-foreground">
           Estimated Cost: {estimatedCost.toFixed(5)} SOL
         </p>
@@ -252,11 +336,13 @@ export function CreateCNFTForm({ setProgress }: CreateCNFTFormProps) {
             <p><strong>Description:</strong> {description}</p>
             <p><strong>Royalty:</strong> {royaltyPercentage}%</p>
             <p><strong>Estimated Cost:</strong> {estimatedCost.toFixed(5)} SOL</p>
+            <p><strong>Recipient:</strong> {recipientAddress || 'Connected Wallet'}</p>
+            <p><strong>Collection:</strong> {collectionAddress || 'Not part of a collection'}</p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>Cancel</Button>
-            <Button onClick={handleCreateCNFT} disabled={isLoading || isConfirming}>
-              {isLoading || isConfirming ? 'Processing...' : 'Confirm'}
+            <Button onClick={handleConfirmMint} disabled={isLoading || isMinting}>
+              {isMinting ? 'Minting...' : 'Confirm Mint'}
             </Button>
           </DialogFooter>
         </DialogContent>

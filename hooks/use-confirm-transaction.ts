@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Transaction, PublicKey, Connection } from '@solana/web3.js';
+import { Transaction, PublicKey, Connection, TransactionSignature } from '@solana/web3.js';
 import { useToast } from "@/components/ui/use-toast";
 
 export const useConfirmTransaction = () => {
@@ -13,7 +13,7 @@ export const useConfirmTransaction = () => {
     transaction: Transaction,
     feePayer: PublicKey,
     description: string
-  ) => {
+  ): Promise<TransactionSignature | null> => {
     if (!publicKey || !signTransaction) {
       toast({
         title: "Wallet not connected",
@@ -27,13 +27,17 @@ export const useConfirmTransaction = () => {
 
     try {
       transaction.feePayer = feePayer;
-      const { blockhash } = await connection.getLatestBlockhash();
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
       transaction.recentBlockhash = blockhash;
 
       const signed = await signTransaction(transaction);
       const signature = await connection.sendRawTransaction(signed.serialize());
 
-      const confirmation = await connection.confirmTransaction(signature, 'confirmed');
+      const confirmation = await connection.confirmTransaction({
+        signature,
+        blockhash,
+        lastValidBlockHeight
+      });
 
       if (confirmation.value.err) {
         throw new Error(`Transaction failed: ${confirmation.value.err.toString()}`);
@@ -58,6 +62,24 @@ export const useConfirmTransaction = () => {
     }
   }, [connection, publicKey, signTransaction, toast]);
 
-  return { confirmTransaction, isConfirming };
+  const retryTransaction = useCallback(async (
+    signature: TransactionSignature,
+    maxRetries: number = 3
+  ): Promise<boolean> => {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const result = await connection.getSignatureStatus(signature);
+        if (result.value?.confirmationStatus === 'confirmed' || result.value?.confirmationStatus === 'finalized') {
+          return true;
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
+      } catch (error) {
+        console.error(`Retry attempt ${i + 1} failed:`, error);
+      }
+    }
+    return false;
+  }, [connection]);
+
+  return { confirmTransaction, isConfirming, retryTransaction };
 };
 
