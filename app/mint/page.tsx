@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, ArrowLeft, Upload } from 'lucide-react'
 import Link from 'next/link'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 export default function MintPage() {
@@ -141,7 +141,7 @@ export default function MintPage() {
             ) : (
               <div className="text-center py-6">
                 <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to mint a BARK Blink NFT.</p>
-                <ConnectWalletButton />
+                <WalletButton />
               </div>
             )}
           </CardContent>

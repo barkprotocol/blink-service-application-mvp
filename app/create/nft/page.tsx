@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Upload, ArrowLeft, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -24,6 +24,7 @@ export default function CreateNFTPage() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [type, setType] = useState('standard')
+  const [nftType, setNftType] = useState<'nft' | 'cnft'>('nft')
   const [isTransferable, setIsTransferable] = useState(true)
   const [image, setImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -91,31 +92,33 @@ export default function CreateNFTPage() {
       formData.append('name', name)
       formData.append('description', description)
       formData.append('type', type)
+      formData.append('nftType', nftType)
       formData.append('isTransferable', isTransferable.toString())
       formData.append('image', image)
       formData.append('owner', publicKey.toBase58())
 
-      const response = await fetch('/api/v1/nfts', {
+      const endpoint = nftType === 'nft' ? '/api/v1/nfts' : '/api/v1/cnfts'
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
       })
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to create NFT')
+        throw new Error(errorData.message || `Failed to create ${nftType.toUpperCase()}`)
       }
 
       const data = await response.json()
       toast({
-        title: "NFT Created",
-        description: `Your NFT "${name}" has been created successfully!`,
+        title: `${nftType.toUpperCase()} Created`,
+        description: `Your ${nftType.toUpperCase()} "${name}" has been created successfully!`,
       })
-      router.push(`/nfts/${data.id}`)
+      router.push(`/${nftType}s/${data.id}`)
     } catch (error) {
-      console.error('Error creating NFT:', error)
+      console.error(`Error creating ${nftType.toUpperCase()}:`, error)
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create NFT. Please try again.",
+        description: error instanceof Error ? error.message : `Failed to create ${nftType.toUpperCase()}. Please try again.`,
         variant: "destructive",
       })
     } finally {
@@ -135,14 +138,29 @@ export default function CreateNFTPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="bg-white shadow-lg">
+        <Card className="bg-background shadow-lg">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold">Create a New NFT</CardTitle>
+            <CardTitle className="text-3xl font-bold">Create a New {nftType.toUpperCase()}</CardTitle>
             <CardDescription>Mint a unique digital asset on the Solana blockchain</CardDescription>
           </CardHeader>
           <CardContent>
             {connected ? (
               <form onSubmit={handleCreate} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="nftType">NFT or cNFT</Label>
+                  <Select value={nftType} onValueChange={(value) => setNftType(value as 'nft' | 'cnft')}>
+                    <SelectTrigger id="nftType">
+                      <SelectValue placeholder="Select NFT type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="nft">Standard NFT</SelectItem>
+                      <SelectItem value="cnft">Compressed NFT (cNFT)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground">
+                    Choose between a standard NFT or a compressed NFT (cNFT).
+                  </p>
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="name">NFT Name</Label>
                   <Input
@@ -154,7 +172,7 @@ export default function CreateNFTPage() {
                     aria-describedby="name-description"
                   />
                   <p id="name-description" className="text-sm text-muted-foreground">
-                    Choose a unique and descriptive name for your NFT.
+                    Choose a unique and descriptive name for your {nftType.toUpperCase()}.
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -169,7 +187,7 @@ export default function CreateNFTPage() {
                     aria-describedby="description-info"
                   />
                   <p id="description-info" className="text-sm text-muted-foreground">
-                    Provide a detailed description of your NFT. This will be visible to potential buyers.
+                    Provide a detailed description of your {nftType.toUpperCase()}. This will be visible to potential buyers.
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -219,9 +237,9 @@ export default function CreateNFTPage() {
                       </div>
                     ) : (
                       <Label htmlFor="image" className="cursor-pointer">
-                        <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                          <Upload className="h-12 w-12 text-gray-400 mb-4" />
-                          <span className="text-sm text-gray-500">Click to upload image (max 5MB)</span>
+                        <div className="flex flex-col items-center justify-center h-64 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors">
+                          <Upload className="h-12 w-12 text-muted-foreground mb-4" />
+                          <span className="text-sm text-muted-foreground">Click to upload image (max 5MB)</span>
                         </div>
                         <Input
                           id="image"
@@ -235,14 +253,14 @@ export default function CreateNFTPage() {
                     )}
                   </div>
                   <p id="image-info" className="text-sm text-muted-foreground">
-                    Upload a JPEG, PNG, or GIF image (max 5MB) that represents your NFT.
+                    Upload a JPEG, PNG, or GIF image (max 5MB) that represents your {nftType.toUpperCase()}.
                   </p>
                 </div>
               </form>
             ) : (
               <div className="text-center py-6">
-                <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to create an NFT.</p>
-                <ConnectWalletButton />
+                <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to create an NFT or cNFT.</p>
+                <WalletButton />
               </div>
             )}
           </CardContent>
@@ -253,7 +271,7 @@ export default function CreateNFTPage() {
                 className="w-full"
                 onClick={handleCreate}
                 disabled={isLoading || !name || !description || !image}
-                aria-label={isLoading ? "Creating NFT..." : "Create NFT"}
+                aria-label={isLoading ? `Creating ${nftType.toUpperCase()}...` : `Create ${nftType.toUpperCase()}`}
               >
                 {isLoading ? (
                   <>
@@ -263,7 +281,7 @@ export default function CreateNFTPage() {
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
-                    Create NFT
+                    Create {nftType.toUpperCase()}
                   </>
                 )}
               </Button>
@@ -274,3 +292,4 @@ export default function CreateNFTPage() {
     </div>
   )
 }
+

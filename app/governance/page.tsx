@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, ArrowLeft, Plus, Check, X } from 'lucide-react'
 import Link from 'next/link'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 interface Proposal {
@@ -191,7 +191,7 @@ export default function GovernancePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <ConnectWalletButton />
+            <WalletButton />
           </CardContent>
         </Card>
 

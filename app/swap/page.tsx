@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, ArrowDown, ArrowLeft, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 interface Token {
@@ -276,7 +276,7 @@ export default function SwapPage() {
             ) : (
               <div className="text-center py-6">
                 <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to perform a swap.</p>
-                <ConnectWalletButton />
+                <WalletButton />
               </div>
             )}
           </CardContent>

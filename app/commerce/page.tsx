@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Loader2, ArrowLeft, ShoppingCart, Plus, Minus } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 interface Product {
@@ -228,7 +228,7 @@ export default function CommercePage() {
             ) : (
               <div className="w-full text-center">
                 <p className="mb-4 text-gray-500">Please connect your wallet to complete the purchase.</p>
-                <ConnectWalletButton />
+                <WalletButton />
               </div>
             )}
           </CardFooter>

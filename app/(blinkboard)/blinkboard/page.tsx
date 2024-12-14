@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button';
+import { WalletButton } from '@/components/ui/wallet-button';
 import Link from 'next/link';
 
 interface Blink {
@@ -133,7 +133,7 @@ export default function Blinkboard() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <h1 className="text-3xl font-bold mb-6">Connect Your Wallet to Access Blinkboard</h1>
-        <ConnectWalletButton />
+        <WalletButton />
       </div>
     );
   }

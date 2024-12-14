@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Bell, Menu, Users, Coins, Settings, LogOut, Search, Moon, Sun, Globe } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,7 +94,7 @@ export function Header({ onMenuClick, isMobileMenuOpen }: HeaderProps) {
                 <Search className="h-5 w-5 text-[#D0BFB4]" />
               </Button>
             )}
-            <ConnectWalletButton />
+            <WalletButton />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="Notifications">

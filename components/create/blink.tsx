@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Upload, ArrowLeft, ImageIcon, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 export default function CreateBlinkPage() {
@@ -208,7 +208,7 @@ export default function CreateBlinkPage() {
             ) : (
               <div className="text-center py-6">
                 <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to create a Blink.</p>
-                <ConnectWalletButton />
+                <WalletButton />
               </div>
             )}
           </CardContent>

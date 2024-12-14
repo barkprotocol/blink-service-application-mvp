@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, X, Sun, Moon } from 'lucide-react'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
 
@@ -62,7 +62,7 @@ function MobileMenu() {
           <NavLink href="#features">Features</NavLink>
           <NavLink href="#how-it-works">How It Works</NavLink>
           <NavLink href="#faq">FAQ</NavLink>
-          <ConnectWalletButton />
+          <WalletButton />
         </nav>
       </SheetContent>
     </Sheet>
@@ -127,7 +127,7 @@ export function Header() {
           <NavLink href="#how-it-works">How It Works</NavLink>
           <NavLink href="/pages/actions/api">API</NavLink>
           <NavLink href="#faq">FAQ</NavLink>
-          <ConnectWalletButton />
+          <WalletButton />
           <ThemeToggle />
         </nav>
         <div className="flex items-center md:hidden">

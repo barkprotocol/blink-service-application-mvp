@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
 import { Gift, ExternalLink } from 'lucide-react'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import Link from 'next/link'
 import { Gift as GiftType } from '@/types/gift'
 
@@ -46,7 +46,7 @@ export default function GiftPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <h1 className="text-3xl font-bold mb-6">Connect Your Wallet to Access Gifts</h1>
-        <ConnectWalletButton />
+        <WalletButton />
       </div>
     )
   }

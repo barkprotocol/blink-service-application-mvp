@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SolanaWalletProvider } from '@/components/providers/solana-wallet-provider'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { toast } from "@/components/ui/use-toast"
 import { Loader2, AlertTriangle } from 'lucide-react'
 
@@ -229,7 +229,7 @@ export default function Staking() {
           </Card>
         </div>
         <div className="mt-8 flex justify-center">
-          <ConnectWalletButton />
+          <WalletButton />
         </div>
       </div>
     </SolanaWalletProvider>

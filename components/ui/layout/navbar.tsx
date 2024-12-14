@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, X } from 'lucide-react'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -39,7 +39,7 @@ const MobileMenu: React.FC = () => {
           <NavLink href="#how-it-works">How It Works</NavLink>
           <NavLink href="/pages/actions/api">API</NavLink>
           <NavLink href="#faq">FAQ</NavLink>
-          <ConnectWalletButton />
+          <WalletButton />
         </nav>
       </SheetContent>
     </Sheet>
@@ -114,7 +114,7 @@ export const Navbar: React.FC = () => {
           <NavLink href="#faq">FAQ</NavLink>
         </nav>
         <div className="flex items-center space-x-4">
-          <ConnectWalletButton />
+          <WalletButton />
           <ThemeToggle />
           <div className="md:hidden">
             <MobileMenu />

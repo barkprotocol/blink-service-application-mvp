@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 import { prisma } from '../lib/prisma';
 import { User } from '@prisma/client';
-import { ApiError } from '../utils/api-error';
+import { ApiError } from '../utils/errors/api-error';
 
 interface JwtPayload {
   id: number;

@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Upload, ArrowLeft, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -242,7 +242,7 @@ export default function CreateNFTPage() {
             ) : (
               <div className="text-center py-6">
                 <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to create an NFT.</p>
-                <ConnectWalletButton />
+                <WalletButton />
               </div>
             )}
           </CardContent>

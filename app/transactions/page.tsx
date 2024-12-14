@@ -11,7 +11,7 @@ import { CreditCard, ArrowLeft } from 'lucide-react'
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -145,7 +145,7 @@ export default function PaymentsPage() {
               </p>
             </CardHeader>
             <CardContent className="flex justify-center">
-              <ConnectWalletButton />
+              <WalletButton />
             </CardContent>
           </Card>
         </motion.div>

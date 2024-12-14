@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, ArrowLeft, Plus, DollarSign, Leaf, Users, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { motion } from 'framer-motion'
 
 interface Campaign {
@@ -373,7 +373,7 @@ export default function CrowdfundingPage() {
             ) : (
               <div className="text-center py-6">
                 <p className="mb-4 text-lg text-muted-foreground">Please connect your wallet to view and create crowdfunding campaigns.</p>
-                <ConnectWalletButton />
+                <WalletButton />
               </div>
             )}
           </CardContent>

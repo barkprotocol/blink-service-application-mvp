@@ -131,8 +131,10 @@ The BARK Blink web interface is optimized for both simplicity and power, built w
 
 3. Configure environment variables:  
    ```bash
-   NEXT_PUBLIC_RPC_ENDPOINT=your_solana_rpc_endpoint  
-   NEXT_PUBLIC_NETWORK=mainnet-beta  
+   NEXT_PUBLIC_SOLANA_NETWORK=mainnet-beta
+   NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+   PINATA_API_KEY=your_pinata_api_key
+   PINATA_SECRET_API_KEY=your_pinata_secret_api_key
    ```  
 
 4. Start the development server:  

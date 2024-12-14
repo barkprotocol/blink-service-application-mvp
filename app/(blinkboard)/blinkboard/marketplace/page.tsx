@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SolanaWalletProvider } from '@/components/SolanaWalletProvider'
-import { ConnectWalletButton } from '@/components/ConnectWalletButton'
+import { WalletButton } from '@/components/WalletButton'
 
 const mockNFTs = [
   { id: 1, name: 'Cool NFT #1', price: 1.5, image: '/placeholder.svg?height=200&width=200' },

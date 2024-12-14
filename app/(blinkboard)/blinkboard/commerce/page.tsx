@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SolanaWalletProvider } from '@/components/providers/solana-wallet-provider'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const mockProducts = [
@@ -64,7 +64,7 @@ export default function Commerce() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">BARK Commerce</h1>
 
-        <ConnectWalletButton />
+        <WalletButton />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-4">

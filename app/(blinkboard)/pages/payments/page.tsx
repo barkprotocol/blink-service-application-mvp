@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SolanaWalletProvider } from '@/components/providers/solana-wallet-provider'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { toast } from "@/components/ui/use-toast"
 import { Loader2, DollarSign, CreditCard, Wallet } from 'lucide-react'

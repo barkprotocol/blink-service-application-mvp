@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, Connection } from '@solana/web3.js'
 import { FaInfoCircle, FaCopy, FaTwitter, FaPlus } from 'react-icons/fa'
-import { WalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import Preview from "@/components/preview"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

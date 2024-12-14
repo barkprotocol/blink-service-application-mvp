@@ -11,7 +11,7 @@ import { CreditCard, ArrowLeft, Wallet } from 'lucide-react'
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, TransactionInstruction } from '@solana/web3.js'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ConnectWalletButton } from '@/components/ui/connect-wallet-button'
+import { WalletButton } from '@/components/ui/wallet-button'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -228,7 +228,7 @@ export default function PaymentsPage() {
                 <p className="text-lg text-muted-foreground mb-6 max-w-md mx-auto">
                   Please connect your wallet to access BARK Blink Payments and start making secure transactions.
                 </p>
-                <ConnectWalletButton />
+                <WalletButton />
               </CardContent>
             </Card>
           </motion.div>
