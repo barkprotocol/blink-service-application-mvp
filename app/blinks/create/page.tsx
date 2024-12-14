@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,21 +12,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Upload } from 'lucide-react'
+import { mintBlink } from '@/lib/programs/mint-blink'
+import { useBlink } from '@/hooks/use-blink'
+import { NFT_METADATA_API_URL } from '@/utils/constants'
 
 export default function CreateBlinkPage() {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [type, setType] = useState('standard')
-  const [isTransferable, setIsTransferable] = useState(true)
-  const [file, setFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { connected, publicKey } = useWallet()
+  const { connected, publicKey, wallet } = useWallet()
   const { toast } = useToast()
   const router = useRouter()
+  const { blink, updateBlink, resetBlink } = useBlink()
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!connected) {
+    if (!connected || !publicKey || !wallet) {
       toast({
         title: "Wallet not connected",
         description: "Please connect your wallet to create a Blink.",
@@ -35,10 +34,10 @@ export default function CreateBlinkPage() {
       return
     }
 
-    if (!name || !description || !file) {
+    if (!blink.text || !blink.bgColor || !blink.textColor) {
       toast({
         title: "Missing information",
-        description: "Please fill in all fields and upload an image.",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       })
       return
@@ -46,29 +45,52 @@ export default function CreateBlinkPage() {
 
     setIsLoading(true)
     try {
-      const formData = new FormData()
-      formData.append('name', name)
-      formData.append('description', description)
-      formData.append('type', type)
-      formData.append('isTransferable', isTransferable.toString())
-      formData.append('image', file)
-      formData.append('owner', publicKey?.toBase58() || '')
-
-      const response = await fetch('/api/blinks', {
+      // Create metadata
+      const metadataResponse = await fetch(NFT_METADATA_API_URL, {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `Blink: ${blink.text.slice(0, 20)}...`,
+          description: blink.text,
+          image: '', // We'll update this after minting
+          attributes: [
+            { trait_type: 'Font Size', value: blink.fontSize },
+            { trait_type: 'Font Family', value: blink.fontFamily },
+            { trait_type: 'Background Color', value: blink.bgColor },
+            { trait_type: 'Text Color', value: blink.textColor },
+            { trait_type: 'Animated', value: blink.isAnimated },
+          ],
+          solanaAddress: publicKey.toBase58(),
+        }),
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to create Blink')
+      if (!metadataResponse.ok) {
+        throw new Error('Failed to create NFT metadata')
       }
 
-      const data = await response.json()
+      const metadata = await metadataResponse.json()
+
+      // Mint the Blink
+      const result = await mintBlink(wallet, blink)
+
+      // Update the metadata with the minted NFT's image URL
+      await fetch(`${NFT_METADATA_API_URL}/${result.nftAddress}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: result.metadataUri,
+        }),
+      })
+
       toast({
         title: "Blink Created",
-        description: `Your Blink "${name}" has been created successfully!`,
+        description: `Your Blink has been created successfully! NFT address: ${result.nftAddress}`,
       })
-      router.push(`/blinks/${data.id}`)
+      router.push(`/blinks/${result.nftAddress}`)
     } catch (error) {
       console.error('Error creating Blink:', error)
       toast({
@@ -81,6 +103,19 @@ export default function CreateBlinkPage() {
     }
   }
 
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          updateBlink({ bgImage: event.target.result as string })
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }, [updateBlink])
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="max-w-2xl mx-auto">
@@ -91,52 +126,81 @@ export default function CreateBlinkPage() {
         <CardContent>
           <form onSubmit={handleCreate} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Blink Name</Label>
+              <Label htmlFor="text">Blink Text</Label>
               <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                id="text"
+                value={blink.text}
+                onChange={(e) => updateBlink({ text: e.target.value })}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              <Label htmlFor="fontSize">Font Size</Label>
+              <Input
+                id="fontSize"
+                type="number"
+                value={blink.fontSize}
+                onChange={(e) => updateBlink({ fontSize: parseInt(e.target.value) })}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="type">Blink Type</Label>
-              <Select value={type} onValueChange={setType}>
-                <SelectTrigger id="type">
-                  <SelectValue placeholder="Select Blink type" />
+              <Label htmlFor="fontFamily">Font Family</Label>
+              <Select value={blink.fontFamily} onValueChange={(value) => updateBlink({ fontFamily: value })}>
+                <SelectTrigger id="fontFamily">
+                  <SelectValue placeholder="Select font family" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="standard">Standard</SelectItem>
-                  <SelectItem value="premium">Premium</SelectItem>
-                  <SelectItem value="limited">Limited Edition</SelectItem>
+                  <SelectItem value="Arial">Arial</SelectItem>
+                  <SelectItem value="Verdana">Verdana</SelectItem>
+                  <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                  <SelectItem value="Courier New">Courier New</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="transferable"
-                checked={isTransferable}
-                onCheckedChange={setIsTransferable}
+            <div className="space-y-2">
+              <Label htmlFor="bgColor">Background Color</Label>
+              <Input
+                id="bgColor"
+                type="color"
+                value={blink.bgColor}
+                onChange={(e) => updateBlink({ bgColor: e.target.value })}
+                required
               />
-              <Label htmlFor="transferable">Transferable</Label>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="image">Upload Image</Label>
+              <Label htmlFor="textColor">Text Color</Label>
               <Input
-                id="image"
+                id="textColor"
+                type="color"
+                value={blink.textColor}
+                onChange={(e) => updateBlink({ textColor: e.target.value })}
+                required
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="animated"
+                checked={blink.isAnimated}
+                onCheckedChange={(checked) => updateBlink({ isAnimated: checked })}
+              />
+              <Label htmlFor="animated">Animated</Label>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bgImage">Background Image (optional)</Label>
+              <Input
+                id="bgImage"
                 type="file"
                 accept="image/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                required
+                onChange={handleFileChange}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="memo">Memo (optional)</Label>
+              <Textarea
+                id="memo"
+                value={blink.memo}
+                onChange={(e) => updateBlink({ memo: e.target.value })}
               />
             </div>
           </form>

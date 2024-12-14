@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ArrowRight, ExternalLink, Zap, Paintbrush, Code, Building2 } from 'lucide-react'
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from 'next/link'
-import { useTheme } from 'next-themes'
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ArrowRight, ExternalLink, Zap, Paintbrush, Code, Building2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useTheme } from 'next-themes';
 
 interface HeroProps {
-  onLaunchApp: () => void
+  onLaunchApp: () => void;
 }
 
 export function Hero({ onLaunchApp }: HeroProps) {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   return (
     <section className="relative text-center py-12 sm:py-16 md:py-20 mb-12 sm:mb-16 md:mb-20 min-h-[calc(100vh-80px)] flex flex-col justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://ucarecdn.com/750e9f1b-edfc-4ac8-a5b4-3286c7de98d6/barkmascottrasparentbg.png"
-          alt="BARK mascot background"
+          src="https://ucarecdn.com/69cf7fa0-0d1f-4e07-ad1e-946244f11adc/eyebg.png"
+          alt="Eye"
           fill
           style={{ objectFit: 'cover' }}
           quality={100}
@@ -29,18 +29,21 @@ export function Hero({ onLaunchApp }: HeroProps) {
           priority
         />
       </div>
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="relative z-10 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto"
       >
-        <Badge variant="outline" className="inline-flex items-center mb-4 sm:mb-6 text-sm font-medium bg-secondary/20 text-secondary-foreground px-3 py-1 rounded-full border border-secondary/50">
+        <Badge
+          variant="outline"
+          className="inline-flex items-center mb-4 sm:mb-6 text-sm font-medium bg-secondary/20 text-secondary-foreground px-3 py-1 rounded-full border border-secondary/50"
+        >
           <Zap className="w-4 h-4 mr-1.5" aria-hidden="true" />
-          <span>Powering the Future of Digital Interactions</span>
+          <span>Blink Into the Future of Digital Assets</span>
         </Badge>
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 sm:mb-8 text-foreground leading-tight">
-          Transform Your <span className="text-primary">Digital Experience</span> with BARK Protocol
+          Create, Manage and <span className="text-primary">Send Blinks on Solana with Ease</span> With BARK
         </h1>
         <p className="font-poppins text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 md:mb-10 text-foreground font-semibold max-w-4xl mx-auto">
           Unlock the full potential of the Solana blockchain and redefine how you create, share, and monetize digital content.
@@ -49,7 +52,7 @@ export function Hero({ onLaunchApp }: HeroProps) {
           Step into the future of digital ownership, seamlessly integrating blockchain technology into your everyday life.
         </p>
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12 sm:mb-16 md:mb-20">
-          <Button 
+          <Button
             onClick={onLaunchApp}
             size="lg"
             className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors"
@@ -57,8 +60,8 @@ export function Hero({ onLaunchApp }: HeroProps) {
             Launch Application
             <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="lg"
             className="w-full sm:w-auto border-2 border-secondary text-secondary-foreground hover:bg-secondary hover:text-secondary-foreground transition-colors"
             asChild
@@ -71,11 +74,26 @@ export function Hero({ onLaunchApp }: HeroProps) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-left max-w-5xl mx-auto">
           {[
-            { icon: Paintbrush, title: "For Content Creators", description: "Mint unique digital assets, enhance your brand presence, and engage your audience in innovative ways." },
-            { icon: Code, title: "For Developers", description: "Utilize our powerful API to build cutting-edge applications on the Solana blockchain." },
-            { icon: Building2, title: "For Businesses", description: "Implement loyalty programs, issue digital certificates, and streamline operations through blockchain technology." }
+            {
+              icon: Paintbrush,
+              title: 'For Content Creators',
+              description:
+                'Mint unique digital assets, enhance your brand presence, and engage your audience in innovative ways.',
+            },
+            {
+              icon: Code,
+              title: 'For Developers',
+              description:
+                'Utilize our powerful API to build cutting-edge applications on the Solana blockchain.',
+            },
+            {
+              icon: Building2,
+              title: 'For Businesses',
+              description:
+                'Implement loyalty programs, issue digital certificates, and streamline operations through blockchain technology.',
+            },
           ].map((item, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -90,6 +108,5 @@ export function Hero({ onLaunchApp }: HeroProps) {
         </div>
       </motion.div>
     </section>
-  )
+  );
 }
-

@@ -45,7 +45,7 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-background shadow-sm mt-20">
+    <footer className="bg-white shadow-sm mt-20">
       <div className="container mx-auto px-4 py-12 flex flex-col items-center">
         <nav aria-label="Social media links" className="mb-8">
           <h2 className="text-2xl font-semibold text-foreground mb-4 text-center">Follow Us</h2>
