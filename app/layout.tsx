@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import { Inter, Syne, Poppins } from "next/font/google";
 import { ToastProvider } from '@/components/ui/toast';
 import { ThemeProvider } from 'next-themes';
-import { SolanaWalletProvider } from '@/components/providers/solana-wallet-provider';
+import { WalletProvider } from '@/components/ui/wallet-provider';
 import { InfoBar } from '@/components/ui/layout/info-bar';
 import "./styles/globals.css";
 import './styles/fonts.css'
@@ -60,7 +60,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <div className="flex flex-col min-h-screen">
-            <SolanaWalletProvider>
+            <WalletProvider>
               <ToastProvider>
                 <InfoBar />
                 <main className="flex-grow">{children}</main>
@@ -68,7 +68,7 @@ export default function RootLayout({
                   &copy; {new Date().getFullYear()} BARK Protocol. All rights reserved.
                 </footer>
               </ToastProvider>
-            </SolanaWalletProvider>
+            </WalletProvider>
           </div>
         </ThemeProvider>
       </body>
